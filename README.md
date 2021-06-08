@@ -79,32 +79,9 @@ usdt:/proc/17593/root/tmp/numba_stap-KGBdiu.so:numba_stap:sort_order_2d
 [...]
 ```
 
-### TODO
+### Loading events into perf
 
-I would like to add these USDT probes to perf. I think I would do that with this:
-
+Tracepoint data can be loaded into perf with this one-liner:
 ```
--> % sudo perf buildid-cache -a $(python find_stap_lib.py)
-```
-
-but that currently gives me a strange error:
-
-```
-Couldn't add /proc/17593/root/tmp/numba_stap-KGBdiu.so: No such file
-```
-
-This is strange because that file definitely exists!
-
-```
--> % readelf -n /proc/17593/root/tmp/numba_stap-KGBdiu.so
-
-Displaying notes found in: .note.stapsdt
-  Owner                Data size 	Description
-  stapsdt              0x00000035	NT_STAPSDT (SystemTap probe descriptors)
-    Provider: numba_stap
-    Name: hotspot_2d_inner
-    Location: 0x0000000000000440, Base: 0x0000000000000528, Semaphore: 0x0000000000000000
-    Arguments:
-  stapsdt              0x00000037	NT_STAPSDT (SystemTap probe descriptors)
-    Provider: numba_stap
+-> % sudo perf probe -x $(python find_stap_lib.py) -a '*'
 ```
